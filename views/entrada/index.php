@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'Id_Entrada',
+            //'Id_Entrada',
             //'Id_Producto',
             [
               'attribute' => 'Producto',//<---Variable para filtro
@@ -52,9 +52,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
             //'id_tipoentrada',
             'Codigo',
-            //'Fecha_Entrada',
-            //'Cantidad_entrada',
-            //'Precio_compra',
+            'Fecha_Entrada',
+            'Cantidad_entrada',
+            'Precio_compra',
             //'Status',
             //'Fecha_Registro',
             [

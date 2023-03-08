@@ -66,100 +66,108 @@ class EntradaController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    /*public function actionCreate()
-    {
-        $model = new Entrada();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'Id_Entrada' => $model->Id_Entrada]);
-            }
-        } else {
-            $model->loadDefaultValues();
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }*/
         public function actionCreate()
         {
             $model = new Entrada();
             $modelinventario = new Inventario();
-            $model3 = new Cierres();
             $Cierre = new Cierres();
-
+            //verificar si existe el registro aparturado para comenzar
             if ($this->request->isPost) {
+                $Cierre = Cierres::find()->where(['fin' => null, 'Status' => 1])->one();
+                if ($Cierre) {
 
-                if ($model->load($this->request->post())) {
-                  /*Valores que no se registran por formulario pero que se deben guardar en BD en conjunto con los del formulario*/
-                  $_POST['Entrada']['Fecha_Entrada']=date("Y/m/d", strtotime($_POST['Entrada']['Fecha_Entrada']));
-                  $_POST['Entrada']['Fecha_Registro']= date("Y-m-d");
-                  $_POST['Entrada']['Status']=1;
-                  $model->attributes=$_POST['Entrada'];
-                  //print_r($model->attributes);
-                  //  exit;
-                  $transaction = Entrada::getDb()->beginTransaction();
-                  try {
-                    if ($model->save()) { //Guardar
-                      $Cierre = Cierres::find()->where(['fin' => null, 'Status' => 1])->one();
-                      if ($_POST['Entrada']['id_tipoentrada']==1){ //Tipo de entrada inicial
-                          //Se crea un registro en la tabla inventario
-                          $id = $Cierre->Id_Cierre;
-                          if ($Cierre){ //Si existe un registro
+                    if ($model->load($this->request->post())) {
+                      /*Valores que no se registran por formulario pero que se deben guardar en BD en conjunto con los del formulario*/
+                      $_POST['Entrada']['Fecha_Entrada']=date("Y/m/d", strtotime($_POST['Entrada']['Fecha_Entrada']));
+                      $_POST['Entrada']['Fecha_Registro']= date("Y-m-d");
+                      $_POST['Entrada']['Status']=1;
+                      $model->attributes=$_POST['Entrada'];
+                      $inventario = Inventario::find()->where(['Id_Cierre' => $Cierre->Id_Cierre, 'Id_Producto' => $model->Id_Producto, 'Status' => 1])->one();
+                      //print_r($model->attributes);
+                      //print_r('inventario');
+                      //print_r($inventario->Id_Inventario);
+                      //exit;
+                      $transaction = Entrada::getDb()->beginTransaction();
+                      try {
+                        if ($model->save()) { //Guardar
+                          if ($_POST['Entrada']['id_tipoentrada']==1){ //Tipo de entrada inicial
+                                if (!$inventario){ //Si no existe lo creo
+                                  //print_r('tipo 1 No existe inventario');
+                                  //var_dump($inventario);
+                                  //die();
+                                  //Se crea un registro en la tabla inventario
+                                  $modelinventario->Id_Cierre= $Cierre->Id_Cierre;
+                                  $modelinventario->Id_Producto=$model->Id_Producto;
+                                  $modelinventario->Cantidad_Inicial=$model->Cantidad_entrada;
+                                  $modelinventario->Existencia=$model->Cantidad_entrada;
+                                  $modelinventario->Fecha_Registro= date("Y-m-d");
+                                  $modelinventario->Status=1;
+                                  $modelinventario->save();
+                                }else { //
+                                  print_r('existe inventario');
+                                  //Yii::$app->session->setFlash('success','You have updated your profile.');
+
+                                  var_dump($inventario);
+                                  die();
+                                  //Mensaje de que ya existe
+                                }
+                        	}else if ($_POST['Entrada']['id_tipoentrada']==2){ // normal
+
+                            if (! $inventario){ //Se crea un registro en la tabla inventario
+                              //print_r('tipo 2 No existe inventario');
+                              //var_dump($inventario);
                               $modelinventario->Id_Cierre= $Cierre->Id_Cierre;
-                              
-                          }else {
+                              $modelinventario->Id_Producto=$model->Id_Producto;
+                              $modelinventario->Cantidad_Inicial=0;
+                              $modelinventario->Existencia=+$model->Cantidad_entrada;
+                              $modelinventario->Fecha_Registro= date("Y-m-d");
+                              $modelinventario->Status=1;
 
-                          }
-                          print_r($invcierre);
+                              $modelinventario->save();
+                            }else { //
+                              //print_r('Existe inventario entrada 2 debe actualizar');
+                              //print_r($inventario->Id_Inventario);
+                              //die();
+                              //$inventario->Id_Inventario=$inventario->Id_Inventario;
+                              $inventario->Cantidad_Inicial=$inventario->Cantidad_Inicial;
+                              $inventario->Existencia=$inventario->Existencia+$model->Cantidad_entrada;
+                              $inventario->isNewRecord = false;
+                              //print_r($modelinventario);
+                              print_r("debio guardarse");
+                              //$inventario->save(); //Update
 
-                          exit;
-                        	$modelinventario->Id_Producto=$model->Id_Producto;
 
-                          $modelinventario->Cantidad_Inicial=$model->Cantidad_entrada;
+                              if($inventario->save(false)) {
+                                  print_r($inventario);
+                              }else{
+                                print_r("GUARDO");
+                              }
 
-                        	$modelinventario->Existencia=$model->Cantidad_entrada;
+                              die();
+                            }
+                        	}
+                          $transaction->commit();
+                             return $this->redirect(['view', 'Id_Entrada' => $model->Id_Entrada]); //Direccionar a la vista view
 
-                        	$modelinventario->Fecha_Registro= date("Y-m-d");
-                        	$modelinventario->Status=1;
-                          $modelinventario->save();
+                        }
 
-                    	}else if ($_POST['Entrada']['id_tipoentrada']==2){ // normal
-                        	//Se verifica que exista registro en la tabla Inventario
-                          /*$inv=Inventario::model()->findByPk(Yii::app()->user->id);
-                          $vid = Yii::app()->db->createCommand('SELECT max(id) FROM buzon')->queryScalar();
-                          $db->createCommand('INSERT INTO `customer` (`name`) VALUES (:name)', [
-                          ':name' => 'Qiang',
-                          ])->execute();*/
-                          //Status=1
-                          //Id_Prooducto = $model->Id_Producto;
-                          //Id_Cierre
-
-                        	//si existe
-                        	  //se actualiza existencia
-
-                        	//Sino
-                        	//Se crea un registro en la tabla inventario y el campo inicio = 0
-
-                    	}
-                      $transaction->commit();
-                         return $this->redirect(['view', 'Id_Entrada' => $model->Id_Entrada]); //Direccionar a la vista view
-
+                        } catch(\Exception $e) {
+                          $transaction->rollBack();
+                        throw $e;
+                        } catch(\Throwable $e) {
+                          $transaction->rollBack();
+                        throw $e;
+                        }
                     }
-
-                    } catch(\Exception $e) {
-                      $transaction->rollBack();
-                    throw $e;
-                    } catch(\Throwable $e) {
-                      $transaction->rollBack();
-                    throw $e;
-                    }
+                }else{
+                  //echo "<script>alert('No tiene apertura para crear entrada')</script>";
+                    //echo "<script type='text/javascript'>alert('Existen Alegatos Registrados')</script>";
+                  return $this->redirect(['/cierres/index']);
                 }
-            } else {
+            }else {
                 $model->loadDefaultValues();
             }
-
             return $this->render('create', [
                 'model' => $model,
             ]);
