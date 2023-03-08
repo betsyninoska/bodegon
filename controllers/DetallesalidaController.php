@@ -2,16 +2,16 @@
 
 namespace app\controllers;
 
-use app\models\Salida;
-use app\models\salidaSearch;
+use app\models\Detallesalida;
+use app\models\detallesalidaSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * SalidaController implements the CRUD actions for Salida model.
+ * DetallesalidaController implements the CRUD actions for Detallesalida model.
  */
-class SalidaController extends Controller
+class DetallesalidaController extends Controller
 {
     /**
      * @inheritDoc
@@ -32,13 +32,13 @@ class SalidaController extends Controller
     }
 
     /**
-     * Lists all Salida models.
+     * Lists all Detallesalida models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new salidaSearch();
+        $searchModel = new detallesalidaSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -48,56 +48,30 @@ class SalidaController extends Controller
     }
 
     /**
-     * Displays a single Salida model.
-     * @param int $Id_Salida Id Salida
+     * Displays a single Detallesalida model.
+     * @param int $Id_detallesalida Id Detallesalida
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($Id_Salida)
+    public function actionView($Id_detallesalida)
     {
         return $this->render('view', [
-            'model' => $this->findModel($Id_Salida),
+            'model' => $this->findModel($Id_detallesalida),
         ]);
     }
 
     /**
-     * Creates a new Salida model.
+     * Creates a new Detallesalida model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-/*    public function actionCreate()
+    public function actionCreate()
     {
-        $model = new Salida();
+        $model = new Detallesalida();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'Id_Salida' => $model->Id_Salida]);
-            }
-        } else {
-            $model->loadDefaultValues();
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }*/
-
-    public function actionCreate()
-    {
-        $model = new Salida();
-
-        if ($this->request->isPost) {
-
-            if ($model->load($this->request->post())) {
-              /*Valores que no se registran por formulario pero que se deben guardar en BD en conjunto con los del formulario*/
-              $_POST['Salida']['Fecha_Registro']= date("Y-m-d");
-              $_POST['Salida']['Status']=1;
-              $model->attributes=$_POST['Salida'];
-              //print_r($_POST['Cierres']); die;
-               if ($model->save()) { //Guardar
-                    return $this->redirect(['view', 'Id_Salida' => $model->Id_Salida]); //Direccionar a la vista view
-               }
-
+                return $this->redirect(['view', 'Id_detallesalida' => $model->Id_detallesalida]);
             }
         } else {
             $model->loadDefaultValues();
@@ -109,18 +83,18 @@ class SalidaController extends Controller
     }
 
     /**
-     * Updates an existing Salida model.
+     * Updates an existing Detallesalida model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $Id_Salida Id Salida
+     * @param int $Id_detallesalida Id Detallesalida
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($Id_Salida)
+    public function actionUpdate($Id_detallesalida)
     {
-        $model = $this->findModel($Id_Salida);
+        $model = $this->findModel($Id_detallesalida);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'Id_Salida' => $model->Id_Salida]);
+            return $this->redirect(['view', 'Id_detallesalida' => $model->Id_detallesalida]);
         }
 
         return $this->render('update', [
@@ -129,29 +103,29 @@ class SalidaController extends Controller
     }
 
     /**
-     * Deletes an existing Salida model.
+     * Deletes an existing Detallesalida model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $Id_Salida Id Salida
+     * @param int $Id_detallesalida Id Detallesalida
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($Id_Salida)
+    public function actionDelete($Id_detallesalida)
     {
-        $this->findModel($Id_Salida)->delete();
+        $this->findModel($Id_detallesalida)->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Salida model based on its primary key value.
+     * Finds the Detallesalida model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $Id_Salida Id Salida
-     * @return Salida the loaded model
+     * @param int $Id_detallesalida Id Detallesalida
+     * @return Detallesalida the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($Id_Salida)
+    protected function findModel($Id_detallesalida)
     {
-        if (($model = Salida::findOne(['Id_Salida' => $Id_Salida])) !== null) {
+        if (($model = Detallesalida::findOne(['Id_detallesalida' => $Id_detallesalida])) !== null) {
             return $model;
         }
 

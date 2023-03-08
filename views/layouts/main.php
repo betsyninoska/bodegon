@@ -82,9 +82,9 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             [
                 'label' => 'Movimientos',
                 'items' => [
-                     
+
                      ['label' => 'Entradas', 'url' => ['/entrada/index']],
-                     ['label' => 'Salidas', 'url' => ['/producto/index']],
+                     ['label' => 'Salidas', 'url' => ['/salida/index']],
                      ['label' => 'Inventario', 'url' => ['/inventario/index']],
                 ],
             ],

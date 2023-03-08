@@ -3,13 +3,13 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var app\models\Salida $model */
+/** @var app\models\Detallesalida $model */
 
-$this->title = Yii::t('app', 'Crear Salida');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Salidas'), 'url' => ['index']];
+$this->title = Yii::t('app', 'Create Detallesalida');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Detallesalidas'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="salida-create">
+<div class="detallesalida-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

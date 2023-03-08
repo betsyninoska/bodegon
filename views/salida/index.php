@@ -7,7 +7,7 @@ use yii\grid\ActionColumn;
 use yii\grid\GridView;
 
 /** @var yii\web\View $this */
-/** @var app\models\SalidaSearch $searchModel */
+/** @var app\models\salidaSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = Yii::t('app', 'Salidas');
@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Create Salida'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app', 'Salidas'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -30,11 +30,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'Id_Salida',
-            'Id_Producto',
-            'Id_UMedida',
-            'Id_DMedida',
+            //'Id_Producto',
+            [
+              'attribute' => 'Producto',//<---Variable para filtro
+              'value' => 'producto.Nombre'//<----Relación y columna que se va a mostrar
+            ],
+            'Codigo',
+            'Descripcion',
             'Fecha_Salida',
-            //'Cantidad_Salida',
+            'Cantidad_Salida',
+            //'Status',
+            //'Fecha_Registro',
+
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Salida $model, $key, $index, $column) {

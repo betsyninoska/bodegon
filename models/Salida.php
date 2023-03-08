@@ -9,12 +9,14 @@ use Yii;
  *
  * @property int $Id_Salida
  * @property int $Id_Producto
- * @property int $Id_UMedida
- * @property int $Id_DMedida
+ * @property string $Codigo
+ * @property string $Descripcion
  * @property string $Fecha_Salida
  * @property int $Cantidad_Salida
+ * @property int $Status
+ * @property string $Fecha_Registro
  *
- * @property Detallem $dMedida
+ * @property DetalleSalida[] $detalleSalidas
  * @property Producto $producto
  */
 class Salida extends \yii\db\ActiveRecord
@@ -33,10 +35,11 @@ class Salida extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['Id_Producto', 'Id_UMedida', 'Id_DMedida', 'Fecha_Salida', 'Cantidad_Salida'], 'required'],
-            [['Id_Producto', 'Id_UMedida', 'Id_DMedida', 'Cantidad_Salida'], 'integer'],
-            [['Fecha_Salida'], 'safe'],
-            [['Id_DMedida', 'Id_UMedida'], 'exist', 'skipOnError' => true, 'targetClass' => Detallem::class, 'targetAttribute' => ['Id_DMedida' => 'Id_DMedida', 'Id_UMedida' => 'Id_UMedida']],
+            [['Id_Producto', 'Codigo', 'Descripcion', 'Fecha_Salida', 'Cantidad_Salida', 'Status', 'Fecha_Registro'], 'required'],
+            [['Id_Producto', 'Cantidad_Salida', 'Status'], 'integer'],
+            [['Fecha_Salida', 'Fecha_Registro'], 'safe'],
+            [['Codigo'], 'string', 'max' => 8],
+            [['Descripcion'], 'string', 'max' => 50],
             [['Id_Producto'], 'exist', 'skipOnError' => true, 'targetClass' => Producto::class, 'targetAttribute' => ['Id_Producto' => 'Id_Producto']],
         ];
     }
@@ -49,21 +52,23 @@ class Salida extends \yii\db\ActiveRecord
         return [
             'Id_Salida' => 'Id Salida',
             'Id_Producto' => 'Id Producto',
-            'Id_UMedida' => 'Id U Medida',
-            'Id_DMedida' => 'Id D Medida',
+            'Codigo' => 'Codigo',
+            'Descripcion' => 'Descripcion',
             'Fecha_Salida' => 'Fecha Salida',
             'Cantidad_Salida' => 'Cantidad Salida',
+            'Status' => 'Status',
+            'Fecha_Registro' => 'Fecha Registro',
         ];
     }
 
     /**
-     * Gets query for [[DMedida]].
+     * Gets query for [[DetalleSalidas]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getDMedida()
+    public function getDetalleSalidas()
     {
-        return $this->hasOne(Detallem::class, ['Id_DMedida' => 'Id_DMedida', 'Id_UMedida' => 'Id_UMedida']);
+        return $this->hasMany(DetalleSalida::class, ['Id_Salida' => 'Id_Salida']);
     }
 
     /**

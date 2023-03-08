@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'Id_Salida' => $model->Id_Salida], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
+                'confirm' => Yii::t('app', 'Estas seguro que desea eliminar este registro?'),
                 'method' => 'post',
             ],
         ]) ?>
@@ -31,10 +31,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'Id_Salida',
             'Id_Producto',
-            'Id_UMedida',
-            'Id_DMedida',
+            'Codigo',
+            'Descripcion',
             'Fecha_Salida',
             'Cantidad_Salida',
+            'Status',
+            'Fecha_Registro',
         ],
     ]) ?>
 
