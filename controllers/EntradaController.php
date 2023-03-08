@@ -102,23 +102,14 @@ class EntradaController extends Controller
                   $transaction = Entrada::getDb()->beginTransaction();
                   try {
                     if ($model->save()) { //Guardar
-                    //  print_r($_POST['Entrada']);
-
-                      if ($_POST['Entrada']['id_tipoentrada']==1){ //inicial
-                          print_r("model inventario ");
-
-                        	//Se crea un registro en la tabla inventario
-                        	$modelinventario->Id_Cierre=1;
-                          $Cierre = Cierres::find()->where(['fin' => null, 'Status' => 1])->all();
-                          if ($Cierre){ //Si existe un registro no cerrado
-                            print_r('hay registro');
-                            $modelinventario->Id_Cierre= $Cierre->identificacion;
-
-                              print_r(  $modelinventario->Id_Cierre);
-                              exit;
+                      $Cierre = Cierres::find()->where(['fin' => null, 'Status' => 1])->one();
+                      if ($_POST['Entrada']['id_tipoentrada']==1){ //Tipo de entrada inicial
+                          //Se crea un registro en la tabla inventario
+                          $id = $Cierre->Id_Cierre;
+                          if ($Cierre){ //Si existe un registro
+                              $modelinventario->Id_Cierre= $Cierre->Id_Cierre;
+                              
                           }else {
-                            // code...'no hay registro'
-                            print_r('no hay nada');
 
                           }
                           print_r($invcierre);
