@@ -7,6 +7,8 @@ use app\models\salidaSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\models\Inventario;
+use app\models\Entrada;
 
 /**
  * SalidaController implements the CRUD actions for Salida model.
@@ -85,20 +87,54 @@ class SalidaController extends Controller
     public function actionCreate()
     {
         $model = new Salida();
-
         if ($this->request->isPost) {
-
             if ($model->load($this->request->post())) {
               /*Valores que no se registran por formulario pero que se deben guardar en BD en conjunto con los del formulario*/
               $_POST['Salida']['Fecha_Registro']= date("Y-m-d");
               $_POST['Salida']['Status']=1;
               $model->attributes=$_POST['Salida'];
-              //print_r($_POST['Cierres']); die;
-               if ($model->save()) { //Guardar
-                    return $this->redirect(['view', 'Id_Salida' => $model->Id_Salida]); //Direccionar a la vista view
-               }
+              $transaction = Entrada::getDb()->beginTransaction();
+              try {
+                    if ($model->save()) { //Guardar
+                    //buscar las entradas de ese producto por orden ascendente metodo fifo
+                    //e ir restando para guardarlo en la tabla inventario
+                    //El status de entrada es que aun se encuentra disponible cuando ya no hay mas se debe colocar en falso =0
 
-            }
+                    //$entradasproducto = Entrada::find()->where([ 'Id_Producto' => $_POST['Salida']['Id_Producto'], 'Status' => 1])->orderBy(['Fecha_Entrada'=>SORT_ASC]['Id_Entrada'=>SORT_ASC])->all();
+
+                    //var_dump($entradasproducto);
+                    foreach ($entradasproducto as $row) {
+                      //$salidasanterioresxidentrada = Salida::find()->where([ 'Id_Producto' => $_POST['Salida']['Id_Producto'],'Id_Entrada' => $row['Id_Entrada'], 'Status' => 1])->orderBy(['Fecha_Entrada'=>SORT_ASC])->all();
+
+                      //SALIDAS
+                      //SELECT * FROM salida LEFT JOIN detallesalida ON salida.Id_Salida = detallesalida.Id_Salida
+
+                      //entradas
+                      //SELECT * FROM entrada INNER JOIN detallesalida ON entrada.Id_Entrada = detallesalida.Id_Entrada
+                      foreach ($salidasanterioresxidentrada as $row2) {
+
+                      $row['row2']=
+                      //echo "id=". $row['Id_Entrada'] .  "Cantidad:". $row['Cantidad_entrada'] . "<br/><br/>";
+                      //Verificar si ya he sacado de ese identrada productos en la misma entrada salida para saber cuanto realmente queda de ese id
+
+                      //Luego restar
+                      //si saque productos
+                      }
+                        $quedan= $row['Cantidad_entrada'];
+                    }
+                    exit;
+
+
+                    return $this->redirect(['view', 'Id_Salida' => $model->Id_Salida]); //Direccionar a la vista view
+
+                    }
+               } catch(\Exception $e) {
+                 $transaction->rollBack();
+               throw $e;
+               } catch(\Throwable $e) {
+                 $transaction->rollBack();
+               throw $e;
+               }
         } else {
             $model->loadDefaultValues();
         }
@@ -106,6 +142,7 @@ class SalidaController extends Controller
         return $this->render('create', [
             'model' => $model,
         ]);
+      }
     }
 
     /**

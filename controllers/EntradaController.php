@@ -70,7 +70,6 @@ class EntradaController extends Controller
         public function actionCreate()
         {
             $model = new Entrada();
-            $modelinventario = new Inventario();
             $Cierre = new Cierres();
             //verificar si existe el registro aparturado para comenzar
             if ($this->request->isPost) {
@@ -82,8 +81,8 @@ class EntradaController extends Controller
                       $_POST['Entrada']['Fecha_Entrada']=date("Y/m/d", strtotime($_POST['Entrada']['Fecha_Entrada']));
                       $_POST['Entrada']['Fecha_Registro']= date("Y-m-d");
                       $_POST['Entrada']['Status']=1;
+                      $_POST['Entrada']['Cantidad_existe']=$_POST['Entrada']['Cantidad_entrada'];
                       $model->attributes=$_POST['Entrada'];
-                      $inventario = Inventario::find()->where(['Id_Cierre' => $Cierre->Id_Cierre, 'Id_Producto' => $model->Id_Producto, 'Status' => 1])->one();
                       //print_r($model->attributes);
                       //print_r('inventario');
                       //print_r($inventario->Id_Inventario);
@@ -91,7 +90,9 @@ class EntradaController extends Controller
                       $transaction = Entrada::getDb()->beginTransaction();
                       try {
                         if ($model->save()) { //Guardar
+                          $inventario = Inventario::find()->where(['Id_Cierre' => $Cierre->Id_Cierre, 'Id_Producto' => $model->Id_Producto, 'Status' => 1])->one();
                           if ($_POST['Entrada']['id_tipoentrada']==1){ //Tipo de entrada inicial
+                                $modelinventario = new Inventario();
                                 if (!$inventario){ //Si no existe lo creo
                                   //print_r('tipo 1 No existe inventario');
                                   //var_dump($inventario);
@@ -113,38 +114,39 @@ class EntradaController extends Controller
                                   //Mensaje de que ya existe
                                 }
                         	}else if ($_POST['Entrada']['id_tipoentrada']==2){ // normal
-
+                            $modelinventario2 = new Inventario();
                             if (! $inventario){ //Se crea un registro en la tabla inventario
                               //print_r('tipo 2 No existe inventario');
                               //var_dump($inventario);
-                              $modelinventario->Id_Cierre= $Cierre->Id_Cierre;
-                              $modelinventario->Id_Producto=$model->Id_Producto;
-                              $modelinventario->Cantidad_Inicial=0;
-                              $modelinventario->Existencia=+$model->Cantidad_entrada;
-                              $modelinventario->Fecha_Registro= date("Y-m-d");
-                              $modelinventario->Status=1;
+                              $modelinventario2->Id_Cierre= $Cierre->Id_Cierre;
+                              $modelinventario2->Id_Producto=$model->Id_Producto;
+                              $modelinventario2->Cantidad_Inicial=0;
+                              $modelinventario2->Existencia=$model->Cantidad_entrada;
+                              $modelinventario2->Fecha_Registro= date("Y-m-d");
+                              $modelinventario2->Status=1;
+                              $modelinventario2->save();
 
-                              $modelinventario->save();
-                            }else { //
+                            }else { //tipo entrada actualizar montos
+
                               //print_r('Existe inventario entrada 2 debe actualizar');
                               //print_r($inventario->Id_Inventario);
                               //die();
                               //$inventario->Id_Inventario=$inventario->Id_Inventario;
-                              $inventario->Cantidad_Inicial=$inventario->Cantidad_Inicial;
                               $inventario->Existencia=$inventario->Existencia+$model->Cantidad_entrada;
-                              $inventario->isNewRecord = false;
+
                               //print_r($modelinventario);
                               print_r("debio guardarse");
+                              //PROBAR
+                              //Post::model()->updateByPk($pk,$attributes,$condition,$params);
                               //$inventario->save(); //Update
-
 
                               if($inventario->save(false)) {
                                   print_r($inventario);
                               }else{
-                                print_r("GUARDO");
+                                print_r("GUARDO  esta entrada ya con inicial");
                               }
 
-                              die();
+                              
                             }
                         	}
                           $transaction->commit();
@@ -219,6 +221,6 @@ class EntradaController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        throw new NotFoundHttpException(Yii::t('app', 'Esta página no existe.'));
     }
 }

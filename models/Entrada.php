@@ -14,10 +14,12 @@ use Yii;
  * @property string $Codigo
  * @property string $Fecha_Entrada
  * @property int $Cantidad_entrada
+ * @property int $Cantidad_existe
  * @property float $Precio_compra
  * @property int $Status
  * @property string $Fecha_Registro
  *
+ * @property Detallesalida[] $detallesalidas
  * @property Producto $producto
  * @property Proveedor $proveedor
  * @property Tipoentrada $tipoentrada
@@ -38,8 +40,8 @@ class Entrada extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_Proveedor', 'Id_Producto', 'id_tipoentrada', 'Codigo', 'Fecha_Entrada', 'Cantidad_entrada', 'Precio_compra', 'Status', 'Fecha_Registro'], 'required'],
-            [['id_Proveedor', 'Id_Producto', 'id_tipoentrada', 'Cantidad_entrada', 'Status'], 'integer'],
+            [['id_Proveedor', 'Id_Producto', 'id_tipoentrada', 'Codigo', 'Fecha_Entrada', 'Cantidad_entrada', 'Cantidad_existe', 'Precio_compra', 'Status', 'Fecha_Registro'], 'required'],
+            [['id_Proveedor', 'Id_Producto', 'id_tipoentrada', 'Cantidad_entrada', 'Cantidad_existe', 'Status'], 'integer'],
             [['Fecha_Entrada', 'Fecha_Registro'], 'safe'],
             [['Precio_compra'], 'number'],
             [['Codigo'], 'string', 'max' => 8],
@@ -62,10 +64,21 @@ class Entrada extends \yii\db\ActiveRecord
             'Codigo' => 'Codigo',
             'Fecha_Entrada' => 'Fecha Entrada',
             'Cantidad_entrada' => 'Cantidad Entrada',
+            'Cantidad_existe' => 'Cantidad Existe',
             'Precio_compra' => 'Precio Compra',
             'Status' => 'Status',
             'Fecha_Registro' => 'Fecha Registro',
         ];
+    }
+
+    /**
+     * Gets query for [[Detallesalidas]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDetallesalidas()
+    {
+        return $this->hasMany(Detallesalida::class, ['Id_Entrada' => 'Id_Entrada']);
     }
 
     /**

@@ -36,6 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'Codigo',
             'Fecha_Entrada',
             'Cantidad_entrada',
+            'Cantidad_existe',
             'Precio_compra',
             'Status',
             'Fecha_Registro',

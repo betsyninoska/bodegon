@@ -18,10 +18,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Crear Inicial'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
-    <p>
         <?= Html::a(Yii::t('app', 'Create Entrada'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
@@ -33,7 +29,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            //'Id_Entrada',
             //'Id_Producto',
             [
               'attribute' => 'Producto',//<---Variable para filtro
@@ -49,11 +44,10 @@ $this->params['breadcrumbs'][] = $this->title;
               'attribute' => 'Tipoentrada',//<---Variable para filtro
               'value' => 'tipoentrada.Nombre'//<----Relación y columna que se va a mostrar
             ],
-
-            //'id_tipoentrada',
             'Codigo',
             'Fecha_Entrada',
             'Cantidad_entrada',
+            'Cantidad_existe',
             'Precio_compra',
             //'Status',
             //'Fecha_Registro',

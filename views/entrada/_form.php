@@ -57,10 +57,10 @@ use app\models\Tipoentrada;
     <?= $form->field($model, 'Fecha_Entrada')->textInput() ?>
 
     <?= $form->field($model, 'Cantidad_entrada')->textInput() ?>
-
     <?= $form->field($model, 'Precio_compra')->textInput() ?>
 
-<!--<?= $form->field($model, 'id_tipoentrada')->textInput() ?>
+<!--    <?= $form->field($model, 'Cantidad_existe')->textInput() ?>
+    <?= $form->field($model, 'id_tipoentrada')->textInput() ?>
     <?= $form->field($model, 'Status')->textInput() ?>
 
     <?= $form->field($model, 'Fecha_Registro')->textInput() ?>-->
