@@ -97,15 +97,21 @@ class SalidaController extends Controller
                   try {
                   if ($model->save()) {
                     //Buscar entrada por producto y cantidad existencia mayor a 0
-                    $exinciaxentrada = Entrada::find()->where([ 'Id_Producto' => $_POST['Salida']['Id_Producto'],['>=', 'Cantidad_existe', 1],'Status' => 1])->orderBy(['Fecha_Entrada'=>SORT_ASC, 'Id_Entrada'=>SORT_ASC])->all();
-                    var_dump($exinciaxentrada);
+                    //$exinciaxentrada = Entrada::find()->where([ 'Id_Producto' => $_POST['Salida']['Id_Producto'],['>=', 'Cantidad_existe', 1],'Status' => 1])->orderBy(['Fecha_Entrada'=>SORT_ASC, 'Id_Entrada'=>SORT_ASC])->all();
+                    $criteria = new CDbCriteria;
+                    $criteria->condition = 'Id_Producto=' . $_POST['Salida']['Id_Producto'] . 'and  Cantidad_existe >=1 and Status=1';
+                    $existenciaxentrada = Entrada::model()->findAll($criteria);
+                    var_dump($existenciaxentrada);
                     exit;
-                    if ($exinciaxentrada) {//si existencia
-                      
-                      foreach ($exinciaxentrada as $row) {
+                    if ($existenciaxentrada) {//si existencia
+                      foreach ($existenciaxentrada as $row) {
+                        /*Si el monto de Cantidad existencia es mayor a la salida restar y actualziar la tabla entrada campo Cantidad_existe
+                        /*Restar tambien en la tabla inventa*/
+
+                        //si es menor a la salida
+
 
                       }
-                      /*En la tabla Inventario campo existencia restar el campo existencia menos $_POST['Salida']['Cantidad_Salida']
 
                     }else{ //no hay entradas de ese producto
                       //Mandar un mensaje porque es imposible sacar producto si no tenemos entradas con existencia
