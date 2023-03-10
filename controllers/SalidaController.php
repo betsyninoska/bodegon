@@ -85,65 +85,61 @@ class SalidaController extends Controller
     }*/
 
     public function actionCreate()
-    {
-        $model = new Salida();
-        if ($this->request->isPost) {
+       {
+          $model = new Salida();
+          if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
-              /*Valores que no se registran por formulario pero que se deben guardar en BD en conjunto con los del formulario*/
-              $_POST['Salida']['Fecha_Registro']= date("Y-m-d");
-              $_POST['Salida']['Status']=1;
-              $model->attributes=$_POST['Salida'];
-              $transaction = Entrada::getDb()->beginTransaction();
-              try {
-                    if ($model->save()) { //Guardar
-                    //buscar las entradas de ese producto por orden ascendente metodo fifo
-                    //e ir restando para guardarlo en la tabla inventario
-                    //El status de entrada es que aun se encuentra disponible cuando ya no hay mas se debe colocar en falso =0
+                  $_POST['Salida']['Fecha_Registro']= date("Y-m-d");
+                  $_POST['Salida']['Status']=1;
+                  $_POST['Salida']['Fecha_Salida']= date("Y/m/d", strtotime($_POST['Salida']['Fecha_Salida']));
+                  $model->attributes=$_POST['Salida'];
+                  $transaction = Salida::getDb()->beginTransaction();
+                  try {
+                  if ($model->save()) {
+                    //Buscar entrada por producto y cantidad existencia mayor a 0
+                    $exinciaxentrada = Entrada::find()->where([ 'Id_Producto' => $_POST['Salida']['Id_Producto'],['>=', 'Cantidad_existe', 1],'Status' => 1])->orderBy(['Fecha_Entrada'=>SORT_ASC, 'Id_Entrada'=>SORT_ASC])->all();
+                    var_dump($exinciaxentrada);
+                    exit;
+                    if ($exinciaxentrada) {//si existencia
+                      
+                      foreach ($exinciaxentrada as $row) {
 
-                    //$entradasproducto = Entrada::find()->where([ 'Id_Producto' => $_POST['Salida']['Id_Producto'], 'Status' => 1])->orderBy(['Fecha_Entrada'=>SORT_ASC]['Id_Entrada'=>SORT_ASC])->all();
-
-                    //var_dump($entradasproducto);
-                    foreach ($entradasproducto as $row) {
-                      //$salidasanterioresxidentrada = Salida::find()->where([ 'Id_Producto' => $_POST['Salida']['Id_Producto'],'Id_Entrada' => $row['Id_Entrada'], 'Status' => 1])->orderBy(['Fecha_Entrada'=>SORT_ASC])->all();
-
-                      //SALIDAS
-                      //SELECT * FROM salida LEFT JOIN detallesalida ON salida.Id_Salida = detallesalida.Id_Salida
-
-                      //entradas
-                      //SELECT * FROM entrada INNER JOIN detallesalida ON entrada.Id_Entrada = detallesalida.Id_Entrada
-                      foreach ($salidasanterioresxidentrada as $row2) {
-
-                      $row['row2']=
-                      //echo "id=". $row['Id_Entrada'] .  "Cantidad:". $row['Cantidad_entrada'] . "<br/><br/>";
-                      //Verificar si ya he sacado de ese identrada productos en la misma entrada salida para saber cuanto realmente queda de ese id
-
-                      //Luego restar
-                      //si saque productos
                       }
-                        $quedan= $row['Cantidad_entrada'];
+                      /*En la tabla Inventario campo existencia restar el campo existencia menos $_POST['Salida']['Cantidad_Salida']
+
+                    }else{ //no hay entradas de ese producto
+                      //Mandar un mensaje porque es imposible sacar producto si no tenemos entradas con existencia
                     }
+
+
                     exit;
 
 
-                    return $this->redirect(['view', 'Id_Salida' => $model->Id_Salida]); //Direccionar a la vista view
+                    //sino
 
-                    }
-               } catch(\Exception $e) {
-                 $transaction->rollBack();
-               throw $e;
-               } catch(\Throwable $e) {
-                 $transaction->rollBack();
-               throw $e;
-               }
-        } else {
-            $model->loadDefaultValues();
-        }
 
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-      }
-    }
+
+                     //return $this->redirect(['view', 'Id_Salida' => $model->Id_Salida]);
+                   }else{
+                      print_r("a guardar");
+                   }
+
+                  } catch(\Exception $e) {
+                    $transaction->rollBack();
+                  throw $e;
+                  } catch(\Throwable $e) {
+                    $transaction->rollBack();
+                  throw $e;
+                  }
+            }
+           } else {
+               $model->loadDefaultValues();
+           }
+
+           return $this->render('create', [
+               'model' => $model,
+           ]);
+       }
 
     /**
      * Updates an existing Salida model.
@@ -192,6 +188,6 @@ class SalidaController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        throw new NotFoundHttpException(Yii::t('app', 'Página no existe.'));
     }
 }

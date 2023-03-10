@@ -130,23 +130,14 @@ class EntradaController extends Controller
 
                               //print_r('Existe inventario entrada 2 debe actualizar');
                               //print_r($inventario->Id_Inventario);
-                              //die();
                               //$inventario->Id_Inventario=$inventario->Id_Inventario;
                               $inventario->Existencia=$inventario->Existencia+$model->Cantidad_entrada;
-
-                              //print_r($modelinventario);
-                              print_r("debio guardarse");
-                              //PROBAR
-                              //Post::model()->updateByPk($pk,$attributes,$condition,$params);
-                              //$inventario->save(); //Update
-
-                              if($inventario->save(false)) {
+                              $inventario->save(false)
+                              /*if($inventario->save(false)) {
                                   print_r($inventario);
                               }else{
                                 print_r("GUARDO  esta entrada ya con inicial");
-                              }
-
-                              
+                              }*/
                             }
                         	}
                           $transaction->commit();
