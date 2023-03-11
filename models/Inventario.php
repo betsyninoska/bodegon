@@ -77,4 +77,20 @@ class Inventario extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Producto::class, ['Id_Producto' => 'Id_Producto']);
     }
+
+
+
+
+    /**
+     * Gets datos del producto con existencia total
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInventarioxproducto($idproducto,$idcierre)
+    {
+      $result = $this->db->createCommand('select * FROM inventario  where Status=1 and id_cierre ='. $idcierre)->queryOne();
+      return $result;
+    }
+
+
 }

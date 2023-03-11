@@ -71,6 +71,25 @@ class Entrada extends \yii\db\ActiveRecord
         ];
     }
 
+
+
+
+
+
+    /**
+     * Gets Existencia en entrada del producto.
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEntradasdeproducto($idproducto)
+    {
+       $result = $this->db->createCommand('select Id_Entrada,Cantidad_existe,Cantidad_entrada from entrada where Id_Producto ='. $idproducto .' and Status=1 and Cantidad_existe >=1')->queryAll();
+       return $result;
+    }
+
+
+
+
     /**
      * Gets query for [[Detallesalidas]].
      *
@@ -110,4 +129,6 @@ class Entrada extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Tipoentrada::class, ['id_tipoentrada' => 'id_tipoentrada']);
     }
+
+
 }

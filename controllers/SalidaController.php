@@ -8,8 +8,9 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\models\Inventario;
+use app\models\Detallesalida;
 use app\models\Entrada;
-
+use app\models\Cierres;
 /**
  * SalidaController implements the CRUD actions for Salida model.
  */
@@ -95,39 +96,71 @@ class SalidaController extends Controller
                   $model->attributes=$_POST['Salida'];
                   $transaction = Salida::getDb()->beginTransaction();
                   try {
+                  $cierre = new Cierres();
+                  $id_cierre = $cierre->getidcierre();
                   if ($model->save()) {
-                    //Buscar entrada por producto y cantidad existencia mayor a 0
-                    //$exinciaxentrada = Entrada::find()->where([ 'Id_Producto' => $_POST['Salida']['Id_Producto'],['>=', 'Cantidad_existe', 1],'Status' => 1])->orderBy(['Fecha_Entrada'=>SORT_ASC, 'Id_Entrada'=>SORT_ASC])->all();
-                    $criteria = new CDbCriteria;
-                    $criteria->condition = 'Id_Producto=' . $_POST['Salida']['Id_Producto'] . 'and  Cantidad_existe >=1 and Status=1';
-                    $existenciaxentrada = Entrada::model()->findAll($criteria);
-                    var_dump($existenciaxentrada);
-                    exit;
-                    if ($existenciaxentrada) {//si existencia
-                      foreach ($existenciaxentrada as $row) {
-                        /*Si el monto de Cantidad existencia es mayor a la salida restar y actualziar la tabla entrada campo Cantidad_existe
-                        /*Restar tambien en la tabla inventa*/
+                    $cantidad_sale= $_POST['Salida']['Cantidad_Salida'];
+                    $modelEntrada = new Entrada();
+                    $detalleexistencias = $modelEntrada->getEntradasdeproducto($_POST['Salida']['Id_Producto']);
+                    foreach ($detalleexistencias as $detalleexist) {
+                      //print_r( $cantidad_sale .'---' . $detalleexist['Id_Entrada'] . ' ' . $detalleexist['Cantidad_existe']);
+                      if ($cantidad_sale >= $detalleexist['Cantidad_existe']){
+                        //colocar en entrada cantidad_existe en 0
+                        $existenciaenentrada = 0;
+                        //Lo que va quedando pendiente por salir para este proceso
+                        $cantidad_sale = $cantidad_sale - $detalleexist['Cantidad_existe'];
+                      }else{
+                        $existenciaenentrada= $detalleexist['Cantidad_existe'] - $cantidad_sale;
+                        $cantidad_sale= $cantidad_sale;
+                      }
+                      //actualiza el monto de existencia por esa entrada
+                      //$modelEntrada2 = new Entrada();
+                      $inventario = Entrada::find()->where( ['Id_Entrada' => $detalleexist['Id_Entrada'] , 'Id_Producto'=> $_POST['Salida']['Id_Producto'] ,'Status' => 1])->one();
 
-                        //si es menor a la salida
-
+                      $inventario->Id_Entrada=$detalleexist['Id_Entrada'];
+                      $inventario->Cantidad_existe=$existenciaenentrada;
+                      //$modelEntrada2->save();
+                      if ($inventario->save()) {
+                        echo "guardo DETALLE Entrada " . $inventario->Id_Entrada . ' cantidad: ' . $inventario->Cantidad_existe . '<br>';
+                      }else{
+                        echo "NO GUADARDO DETALLE Entrada " . $inventario->Id_Entrada . ' cantidad: ' . $inventario->Cantidad_existe . '<br>';
 
                       }
+                      //Insertar registro en detalle de la salida con el monto cantidad existente de esa entrada $detalleexist['Cantidad_existe']
+                      $modeldetallesalida = new Detallesalida();
+                      $modeldetallesalida->Id_Entrada = $detalleexist['Id_Entrada'];
+                      $modeldetallesalida->Id_Salida = $model->Id_Salida;
+                      $modeldetallesalida->Cantidad= $cantidad_sale;
+                      $modeldetallesalida->Status= 1;
+                      $modeldetallesalida->Fecha_Registro=$_POST['Entrada']['Fecha_Registro']= date("Y-m-d");
+                      //$modeldetallesalida->save(false);
+                      if($modeldetallesalida->save(false)){
+                        echo ("inserto detalle salida " .  $modeldetallesalida->Id_Entrada . 'Salida ' .$modeldetallesalida->Id_Salida) . '<br>' ;
+                      }else{
+                        echo ("No inserto detalle salida " .  $modeldetallesalida->Id_Entrada . 'Salida ' .$modeldetallesalida->Id_Salida) . '<br>'  ;
+                      }
 
-                    }else{ //no hay entradas de ese producto
-                      //Mandar un mensaje porque es imposible sacar producto si no tenemos entradas con existencia
                     }
+                    //Restar el monto globa de la salida en inventario
 
+                    //$modelinventario= new Inventario;
+                    //$modelinventario->getInventarioxproducto($_POST['Salida']['Id_Producto'], $id_cierre);
 
+                    $inventario = Inventario::find()->where(['Id_Cierre' => $id_cierre, 'Id_Producto' => $_POST['Salida']['Id_Producto'], 'Status' => 1])->one();
+
+                    $inventario->Existencia=$inventario->Existencia - $_POST['Salida']['Cantidad_Salida'];
+                    //$modelinventario->save();
+                    if($inventario->save()){
+                      echo"actualizo inventario  . $inventario->Id_Inventario.' Existencia' . $inventario->Existencia" . '<br>';
+                    }else{
+                      echo"NO actualizo inventario  . $inventario->Id_Inventario.' Existencia' . $inventario->Existencia" . '<br>';
+
+                    }
                     exit;
-
-
-                    //sino
-
-
-
-                     //return $this->redirect(['view', 'Id_Salida' => $model->Id_Salida]);
+                    //if
+                    //return $this->redirect(['view', 'Id_Salida' => $model->Id_Salida]);
                    }else{
-                      print_r("a guardar");
+                      print_r("error al guardar");
                    }
 
                   } catch(\Exception $e) {

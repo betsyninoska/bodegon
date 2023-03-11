@@ -60,4 +60,29 @@ class Cierres extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Inventario::class, ['Id_Cierre' => 'Id_Cierre']);
     }
+
+    /**
+     * Gets Existencia en entrada del producto.
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getidcierre()
+    {
+
+       $result = $this->db->createCommand('select Id_Cierre from cierres where Status = 1  and fin is null')->queryOne();
+       return $result['Id_Cierre'] ;
+    }
+
+
+    /**
+     * Gets Registro activo de cierre
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getcierre()
+    {
+       $result = $this->db->createCommand('select * from cierres where Status = 1  and fin is null')->queryOne();
+       return $result ;
+    }
+
 }
