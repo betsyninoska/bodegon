@@ -11,14 +11,20 @@ use app\models\Producto;
  */
 class ProductoSearch extends Producto
 {
+
     /**
      * {@inheritdoc}
      */
+
+     public $Categoria;
+     public $Medida;
+
+
     public function rules()
     {
         return [
-            [['Id_Producto', 'Id_UMedida', 'Id_Categoria', 'Status'], 'integer'],
-            [['Nombre', 'Descripcion', 'Imagen', 'Fecha_registro'], 'safe'],
+            [['Id_Producto',  'Status'], 'integer'],
+            [['Nombre', 'Descripcion', 'Imagen', 'Fecha_registro','Categoria','Medida'], 'safe'],
         ];
     }
 
@@ -56,18 +62,22 @@ class ProductoSearch extends Producto
             return $dataProvider;
         }
 
+        $query->joinWith(['medida']);//<------El nombre de la Relación
+        $query->joinWith(['categoria']);//<------El nombre de la Relación
         // grid filtering conditions
         $query->andFilterWhere([
             'Id_Producto' => $this->Id_Producto,
-            'Id_UMedida' => $this->Id_UMedida,
-            'Id_Categoria' => $this->Id_Categoria,
+            //'Id_UMedida' => $this->Id_UMedida,
+            //'Id_Categoria' => $this->Id_Categoria,
             'Status' => $this->Status,
             'Fecha_registro' => $this->Fecha_registro,
         ]);
 
         $query->andFilterWhere(['like', 'Nombre', $this->Nombre])
             ->andFilterWhere(['like', 'Descripcion', $this->Descripcion])
-            ->andFilterWhere(['like', 'Imagen', $this->Imagen]);
+            ->andFilterWhere(['like', 'Imagen', $this->Imagen])
+
+            ->andFilterWhere(['like', 'categoria.Nombre', $this->Categoria]);
 
         return $dataProvider;
     }

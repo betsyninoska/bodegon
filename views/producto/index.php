@@ -29,10 +29,22 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'Id_Producto',
-            'Id_UMedida',
-            'Id_Categoria',
+            //'Id_Producto',
+            //'Id_UMedida',
+            [
+              'attribute' => 'Medida',//<---Variable para filtro
+              'value' => 'medida.Nombre'//<----Relación y columna que se va a mostrar
+            ],
+            //'Id_Categoria',
+            [
+              'attribute' => 'Categoria',//<---Variable para filtro
+              'value' => 'categoria.Nombre'//<----Relación y columna que se va a mostrar
+            ],
+            
+
             'Nombre',
+
+
             //'Descripcion',
             //'Imagen',
             //'Status',
