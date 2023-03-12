@@ -16,7 +16,7 @@ use Yii;
  * @property int $Status
  * @property string $Fecha_Registro
  *
- * @property DetalleSalida[] $detalleSalidas
+ * @property Detallesalida[] $detallesalidas
  * @property Producto $producto
  */
 class Salida extends \yii\db\ActiveRecord
@@ -62,13 +62,13 @@ class Salida extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[DetalleSalidas]].
+     * Gets query for [[Detallesalidas]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getDetalleSalidas()
+    public function getDetallesalidas()
     {
-        return $this->hasMany(DetalleSalida::class, ['Id_Salida' => 'Id_Salida']);
+        return $this->hasMany(Detallesalida::class, ['Id_Salida' => 'Id_Salida']);
     }
 
     /**
