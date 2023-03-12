@@ -132,7 +132,7 @@ class EntradaController extends Controller
                               //print_r($inventario->Id_Inventario);
                               //$inventario->Id_Inventario=$inventario->Id_Inventario;
                               $inventario->Existencia=$inventario->Existencia+$model->Cantidad_entrada;
-                              $inventario->save(false)
+                              $inventario->save();
                               /*if($inventario->save(false)) {
                                   print_r($inventario);
                               }else{
