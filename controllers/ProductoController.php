@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use app\models\Producto;
-use app\models\ProductoSearch;
+use app\models\productoSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -38,7 +38,7 @@ class ProductoController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new ProductoSearch();
+        $searchModel = new productoSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [

@@ -7,7 +7,7 @@ use yii\grid\ActionColumn;
 use yii\grid\GridView;
 
 /** @var yii\web\View $this */
-/** @var app\models\ProductoSearch $searchModel */
+/** @var app\models\productoSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = Yii::t('app', 'Productos');
@@ -29,23 +29,18 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            //'Id_Producto',
+            //'Id_Categoria',
+            [
+              'attribute' => 'Producto',//<---Variable para filtro
+              'value' => 'categoria.Nombre'//<----Relación y columna que se va a mostrar
+            ],
             //'Id_UMedida',
             [
               'attribute' => 'Medida',//<---Variable para filtro
-              'value' => 'medida.Nombre'//<----Relación y columna que se va a mostrar
+              'value' => 'uMedida.Nombre'//<----Relación y columna que se va a mostrar
             ],
-            //'Id_Categoria',
-            [
-              'attribute' => 'Categoria',//<---Variable para filtro
-              'value' => 'categoria.Nombre'//<----Relación y columna que se va a mostrar
-            ],
-            
-
             'Nombre',
-
-
-            //'Descripcion',
+            'Descripcion',
             //'Imagen',
             //'Status',
             //'Fecha_registro',

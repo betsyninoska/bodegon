@@ -19,7 +19,6 @@ use Yii;
  * @property Categoria $categoria
  * @property Entrada[] $entradas
  * @property Inventario[] $inventarios
- * @property Proveedor[] $proveedors
  * @property Salida[] $salidas
  * @property Medida $uMedida
  */
@@ -94,16 +93,6 @@ class Producto extends \yii\db\ActiveRecord
     public function getInventarios()
     {
         return $this->hasMany(Inventario::class, ['Id_Producto' => 'Id_Producto']);
-    }
-
-    /**
-     * Gets query for [[Proveedors]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProveedors()
-    {
-        return $this->hasMany(Proveedor::class, ['Id_Producto' => 'Id_Producto']);
     }
 
     /**
