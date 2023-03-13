@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Create Entrada'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app', 'Crear'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -50,12 +50,21 @@ $this->params['breadcrumbs'][] = $this->title;
             'Precio_compra',
             //'Status',
             //'Fecha_Registro',
-            [
+            /*[
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Entrada $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'Id_Entrada' => $model->Id_Entrada]);
                  }
+            ],*/
+
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'urlCreator' => function($action, $model, $key, $index) {
+                        return Url::toRoute(['entrada/view','Id_Entrada' => $model->Id_Entrada]); },
+                'template' => '{view}',
+
             ],
+
         ],
     ]); ?>
 
