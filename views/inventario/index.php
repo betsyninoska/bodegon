@@ -17,9 +17,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
+    <!--<p>
         <?= Html::a(Yii::t('app', 'Create Inventario'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    </p>-->
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -40,12 +40,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'Existencia',
             //'Status',
             //'Fecha_Registro',
-            [
+            /*[
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Inventario $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'Id_Inventario' => $model->Id_Inventario]);
                  }
-            ],
+            ],*/
         ],
     ]); ?>
 
