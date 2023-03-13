@@ -42,11 +42,20 @@ $this->params['breadcrumbs'][] = $this->title;
             //'Status',
             //'Fecha_Registro',
 
-            [
+            /*[
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Salida $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'Id_Salida' => $model->Id_Salida]);
                  }
+            ],*/
+
+
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'urlCreator' => function($action, $model, $key, $index) {
+                        return Url::toRoute(['detallesalida/index','Id_Salida' => $model->Id_Salida]); },
+                'template' => '{view}',
+
             ],
         ],
     ]); ?>

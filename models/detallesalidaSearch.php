@@ -14,11 +14,12 @@ class detallesalidaSearch extends Detallesalida
     /**
      * {@inheritdoc}
      */
+      public $Fecha_Entrada;
     public function rules()
     {
         return [
-            [['Id_detallesalida', 'Id_Entrada', 'Id_Salida', 'Cantidad', 'Status'], 'integer'],
-            [['Fecha_Registro'], 'safe'],
+            [['Id_detallesalida',  'Id_Salida', 'Cantidad', 'Status'], 'integer'],
+            [['Fecha_Registro','Fecha_Entrada'], 'safe'],
         ];
     }
 
@@ -55,17 +56,17 @@ class detallesalidaSearch extends Detallesalida
             // $query->where('0=1');
             return $dataProvider;
         }
-
+        $query->joinWith(['entrada',]);//<------El nombre de la Relación
         // grid filtering conditions
         $query->andFilterWhere([
             'Id_detallesalida' => $this->Id_detallesalida,
-            'Id_Entrada' => $this->Id_Entrada,
+            //'Id_Entrada' => $this->Id_Entrada,
             'Id_Salida' => $this->Id_Salida,
             'Cantidad' => $this->Cantidad,
             'Status' => $this->Status,
             'Fecha_Registro' => $this->Fecha_Registro,
         ]);
-
+        $query->andFilterWhere(['like', 'entrada.Fecha_Entrada', $this->Fecha_Entrada]);
         return $dataProvider;
     }
 }
