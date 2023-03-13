@@ -92,11 +92,29 @@ class SalidaController extends Controller
         $Cierre = new Cierres();
         if ($this->request->isPost) {
             $Cierre = Cierres::find()->where(['fin' => null, 'Status' => 1])->one();
+
+
             if ($model->load($this->request->post()) ) {
               $_POST['Salida']['Fecha_Salida']=date("Y/m/d", strtotime($_POST['Salida']['Fecha_Salida']));
               $_POST['Salida']['Fecha_Registro']= date("Y-m-d");
               $_POST['Salida']['Status']=1;
               $model->attributes=$_POST['Salida'];
+
+
+              /*echo '<pre>';
+              print_r($model);
+              echo '</pre>';*/
+
+              //VALIDACION FORMULARIO
+              if ($model->validate()) {
+                echo"fue validado";
+                } else {
+                echo"dioo error";
+                $errors = $model->errors;
+              }
+
+
+
               $transaction = Salida::getDb()->beginTransaction();
               try {
                   $fracaso=false;
@@ -185,6 +203,12 @@ class SalidaController extends Controller
         ]);
     }
 
+
+
+    /*public function actionSalidaajax(){
+      return $this->render()
+
+    }*/
     /**
      * Updates an existing Salida model.
      * If update is successful, the browser will be redirected to the 'view' page.

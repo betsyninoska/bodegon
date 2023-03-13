@@ -13,9 +13,9 @@ use app\models\Producto;
 
 <div class="salida-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([]); ?>
 
-    <!--<?= $form->field($model, 'Id_Producto')->textInput() ?>-->
+
    <?=  $form->field($model, 'Id_Producto')->widget(Select2::classname(), [
        'data' => ArrayHelper::map(Producto::find()->all(), 'Id_Producto', 'Nombre'),
        'theme' => Select2::THEME_KRAJEE_BS5,
